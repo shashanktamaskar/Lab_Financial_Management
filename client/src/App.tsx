@@ -9,6 +9,10 @@ import Dashboard from "./pages/Dashboard";
 import Expenses from "./pages/Expenses";
 import Debts from "./pages/Debts";
 import Invoices from "./pages/Invoices";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { trpc, trpcClient } from "./lib/trpc";
+
+const queryClient = new QueryClient();
 
 function Router() {
   // Dashboard routes require authentication
@@ -66,15 +70,19 @@ function InvoicesPage() {
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="light"
-        // switchable
-      >
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </ThemeProvider>
+      <trpc.Provider client={trpcClient} queryClient={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider
+            defaultTheme="light"
+            // switchable
+          >
+            <TooltipProvider>
+              <Toaster />
+              <Router />
+            </TooltipProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </trpc.Provider>
     </ErrorBoundary>
   );
 }
